@@ -1,0 +1,116 @@
+%TC:ignore
+% ################################################################################
+% 
+%       INSTRUCTIONS, PLEASE READ BEFORE IF YOU INTEND TO MODIFY THIS FILE
+% 
+% ################################################################################
+% For the most part, you should not change this file. In particular, the format 
+% should not be changed. However, depending on what you want you might need to
+% use additional packages (and possibly remove old ones that may be incompatible.
+% Do that at your own discretion.
+% ################################################################################
+
+% Encoding and Language
+\usepackage[utf8x]{inputenc}
+\usepackage{csquotes}
+\usepackage[main=english]{babel}
+\usepackage{iflang}
+
+% Font Configurations
+\renewcommand{\rmdefault}{phv}
+\renewcommand{\sfdefault}{phv}
+\def\FontLn{% 16 pt normal
+  \usefont{T1}{phv}{m}{n}\fontsize{14pt}{14pt}\selectfont}
+\def\FontLb{% 16 pt bold
+  \usefont{T1}{phv}{b}{n}\fontsize{14pt}{14pt}\selectfont}
+\def\FontMn{% 14 pt normal
+  \usefont{T1}{phv}{m}{n}\fontsize{12pt}{12pt}\selectfont}
+\def\FontMb{% 14 pt bold
+  \usefont{T1}{phv}{b}{n}\fontsize{12pt}{12pt}\selectfont}
+\def\FontSn{% 12 pt normal
+  \usefont{T1}{phv}{m}{n}\fontsize{10pt}{10pt}\selectfont}
+
+% Font Encoding
+\usepackage[T1]{fontenc}
+
+% Page Geometry
+\usepackage{geometry}	
+\geometry{verbose,tmargin=2cm,bmargin=1.7cm,lmargin=2cm,rmargin=2cm}
+\usepackage{multirow}
+\usepackage{multicol}
+
+% Line Spacing
+\usepackage{setspace}
+\renewcommand{\baselinestretch}{1.2}
+
+% Graphics and Figures
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{subfigmat}
+\usepackage{float}
+
+%Colors
+\usepackage{xcolor}
+
+% Mathematics and Theorems
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{dcolumn}
+\usepackage{indentfirst}
+
+% Comments and Verbatim
+\usepackage{verbatim}
+
+% Hyperlinks
+\usepackage[pdftex]{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    anchorcolor=black,
+    citecolor=cyan,
+    filecolor=black,
+    menucolor=black,
+    urlcolor=teal,
+    bookmarksopen=true,
+    bookmarksnumbered=true
+}
+
+% Captions and References
+\usepackage[figure,table]{hypcap}
+\usepackage[format=plain]{caption}
+\DeclareCaptionFont{georgia}{\small\fontseries{n}\fontfamily{georgia}\selectfont}
+\captionsetup{labelfont=georgia,font=georgia}
+
+% Bibliography
+\usepackage[backend=biber,style=apa]{biblatex}
+
+% Index
+\usepackage{makeidx}
+\makeindex
+
+% Acronyms
+\usepackage[printonlyused]{acronym}
+
+% Lipsum (for placeholder text)
+\usepackage{lipsum}
+
+% Cleveref (for clever references)
+\usepackage[\IfLanguageName{english}{english}{portuguese}]{cleveref}
+\Crefname{equation}{Eq.}{Eqs.}
+
+% Colors
+\usepackage{xcolor}
+\usepackage{color}
+
+% Custom Commands
+\newcommand{\gray}[1]{\textcolor{gray}{#1}}
+
+% Equation Numbering
+\renewcommand{\theequation}{{\fontseries{n}\fontfamily{georgia}\selectfont\arabic{equation}}}
+
+% Section and Subsection Fonts
+\sectionfont{\Large\bfseries\fontfamily{lmss}\selectfont}
+\subsectionfont{\large\bfseries\fontfamily{lmss}\selectfont}
+%TC:endignore
