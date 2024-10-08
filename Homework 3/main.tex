@@ -1,0 +1,524 @@
+\documentclass[12pt,a4paper,oneside]{paper}
+\input{./preamble}
+
+\addbibresource{bibliography.bib}
+\begin{document}
+\pagestyle{plain}
+
+
+% Title
+\def\title {Homework Assignment 3}
+
+% Input the cover
+\input{cover} 
+\cleardoublepage
+\fontfamily{cmr}\selectfont
+\setcounter{page}{0}
+\tableofcontents
+\newpage
+
+\small
+
+\section{Principal Component Analysis}
+
+\subsection*{a)}
+
+\subsubsection*{i)}
+
+Starting from the formalization of maximizing the scatter we have that: 
+
+\begin{align*}
+        \max \sum_{i=1}^{n} \left\| P \bm{x_i} - P \bm{\bar{x}} \right\|^2
+\end{align*}
+
+Expanding the norm we have that:
+
+
+\begin{align*}
+    \max \sum_{i=1}^{n} \left\| P \bm{x_i} - P \bm{\bar{x}} \right\|^2 &= \max \sum_{i=1}^{n} \left( P \bm{x_i} - P \bm{\bar{x}} \right)^T \left( P \bm{x_i} - P \bm{\bar{x}} \right) \\
+    &= \max \sum_{i=1}^{n} \left( P \left( \bm{x_i} - \bm{\bar{x}} \right) \right)^T P \left( \bm{x_i} - \bm{\bar{x}} \right) \\
+    &= \max \sum_{i=1}^{n} \left( \bm{x_i} - \bm{\bar{x}} \right)^T P^T P \left( \bm{x_i} - \bm{\bar{x}} \right) \\
+\end{align*}
+
+Now, we need to consider two properties of the matrix $P$:
+\begin{itemize}
+    \item $P$ is idempotent, i.e. $P^n = P \quad \forall n \in \mathbb{N} $, because projecting a vector twice is the same as projecting it once. If it is already in the subspace of the projection than another projection will not change it.
+    \item $P$ is symmetric, i.e. $P = P^T$
+\end{itemize}
+
+Now, we can rewrite the expression as:
+
+\begin{align*}
+    \max \sum_{i=1}^{n} \left\| P \bm{x_i} - P \bm{\bar{x}} \right\|^2 &= \max \sum_{i=1}^{n} \left( \bm{x_i} - \bm{\bar{x}} \right)^T P \left( \bm{x_i} - \bm{\bar{x}} \right) \\
+\end{align*}
+
+Because, $P^T P = P P = P$. This is the same as the expression we wanted to show.
+
+\subsubsection*{ii)}
+
+To prove that it is the same as $\max Tr(S_1 P)$, we first have to consider the Scatter matrix $S_1$:
+
+\begin{align*}
+    S_1 &= \sum_{i=1}^{n} \left( \bm{x_i} - \bm{\bar{x}} \right) \left( \bm{x_i} - \bm{\bar{x}} \right)^T
+\end{align*}
+
+This matrix is often used to estimate the covariance matrix and actually measures the scatter of the data by
+taking the outer product of the data points.
+
+Now, we can rewrite the expression from the previous question as:
+
+\begin{align*}
+    \max \sum_{i=1}^{n} \left\| P \bm{x_i} - P \bm{\bar{x}} \right\|^2 &= \max \sum_{i=1}^{n} \left( \bm{x_i} - \bm{\bar{x}} \right)^T P \left( \bm{x_i} - \bm{\bar{x}} \right) \\
+    &= \max \sum_{i=1}^{n} Tr \left( \left( \bm{x_i} - \bm{\bar{x}} \right)^T P \left( \bm{x_i} - \bm{\bar{x}} \right) \right) \quad {\text{because the trace of a scalar is the scalar itself}} \\
+\end{align*}
+
+Because the trace is invariant under cyclic permutations, i.e. $Tr(ABC) = Tr(BCA) = Tr(CAB)$, we can rewrite the expression as:
+\begin{align*}
+    &= \max \sum_{i=1}^{n} Tr \left( P \left( \bm{x_i} - \bm{\bar{x}} \right) \left( \bm{x_i} - \bm{\bar{x}} \right)^T \right) \\
+    &= \max Tr \left( P \sum_{i=1}^{n} \left( \bm{x_i} - \bm{\bar{x}} \right) \left( \bm{x_i} - \bm{\bar{x}} \right)^T \right) \\
+    &= \max Tr \left( P S_1 \right) \quad {\text{because $S_1 = \sum_{i=1}^{n} \left( \bm{x_i} - \bm{\bar{x}} \right) \left( \bm{x_i} - \bm{\bar{x}} \right)^T$}} \\
+\end{align*}
+
+This is the same as the expression we wanted to show.
+
+\newpage
+\subsection*{b)}
+
+\subsubsection*{i)}
+
+Centering the data, which is done by subtracting the mean from each data point, is important for PCA because it
+removes the bias from the data. i.e., the bias introduced by the mean.
+This is important because the first principal component will always be the
+direction of the highest variance. If the data is not centered, the first
+principal component will be the direction that minimizes the distance to the data points,
+which is not what we want. This would also jeopardize the minimization of the projection
+error, because uncentered data would result in projections skewed towards the mean, 
+leading to a higher projection error that does not reflect the actual variance of the data.
+In the plot above, we can see that the data is not centered, because the mean of the data is not at the origin,
+abd we see two dashed lines that represent the first principal component, but passing through the origin.
+This shows that if the data is not centered the principal componentes will not align with the variance of the data, 
+affected by the bias introduced by the mean and, therefore, affecting the projection error.
+
+\subsubsection*{ii)}
+
+The reconstruction error is given, after centering, by:
+
+\begin{align*}
+    \sum_{i=1}^{n} \left\| \left( \bm{x_i} - \bm{\bar{x}} \right) - P \left( \bm{x_i} - \bm{\bar{x}} \right) \right\|^2 
+\end{align*}
+
+If we isolate $\left( \bm{x_i} - \bm{\bar{x}} \right)$ and expand the norm, we have:
+
+\begin{align*}
+    \sum_{i=1}^{n} \left\| \left( \bm{x_i} - \bm{\bar{x}} \right) - P \left( \bm{x_i} - \bm{\bar{x}} \right) \right\|^2 &= \sum_{i=1}^{n} \left\| (I - P) \left( \bm{x_i} - \bm{\bar{x}} \right) \right\|^2 \\
+    &= \sum_{i=1}^{n} \left( (I - P) \left( \bm{x_i} - \bm{\bar{x}} \right) \right)^T (I - P) \left( \bm{x_i} - \bm{\bar{x}} \right) \\
+    &= \sum_{i=1}^{n} \left( \bm{x_i} - \bm{\bar{x}} \right)^T (I - P)^T (I - P) \left( \bm{x_i} - \bm{\bar{x}} \right) \\
+\end{align*}
+
+Now, since $P$ is idempotent and symmetric, we have that $(I - P)^T (I - P) = (I - P) (I - P) = I - P - P + P^2 = I - P$.
+
+Therefore, the expression becomes:
+
+\begin{align*}
+    \min \sum_{i=1}^{n} \left\| \left( \bm{x_i} - \bm{\bar{x}} \right) - P \left( \bm{x_i} - \bm{\bar{x}} \right) \right\|^2 &= \min \sum_{i=1}^{n} \left( \bm{x_i} - \bm{\bar{x}} \right)^T (I - P) \left( \bm{x_i} - \bm{\bar{x}} \right) \\
+\end{align*}
+
+As we wanted to show.
+
+\subsection*{iii)}
+
+Similir to the previous question (a)ii)), $S_2$ is defined as:
+
+\begin{align*}
+    S_2 &= \sum_{i=1}^{n} \left( \bm{x_i} - \bm{x_i} \right) \left( \bm{x_i} - \bm{x_i} \right)^T
+\end{align*}
+
+And is the scatter matrix.
+
+Following the same steps as before, we have that:
+
+\begin{align*}
+    \min \sum_{i=1}^{n} \left\| \left( \bm{x_i} - \bm{\bar{x}} \right) - P \left( \bm{x_i} - \bm{\bar{x}} \right) \right\|^2 &= \min \sum_{i=1}^{n} \left( \bm{x_i} - \bm{\bar{x}} \right)^T (I - P) \left( \bm{x_i} - \bm{\bar{x}} \right) \\
+    &= \min \sum_{i=1}^{n} Tr \left( \left( \bm{x_i} - \bm{\bar{x}} \right)^T (I - P) \left( \bm{x_i} - \bm{\bar{x}} \right) \right) \\
+    &= \min Tr \left( (I - P) \sum_{i=1}^{n} \left( \bm{x_i} - \bm{\bar{x}} \right) \left( \bm{x_i} - \bm{\bar{x}} \right)^T \right) \\
+    &= \min Tr \left( S_2 (I - P) \right) \quad {\text{because $S_2 = \sum_{i=1}^{n} \left( \bm{x_i} - \bm{x_i} \right) \left( \bm{x_i} - \bm{x_i} \right)^T$}} \\
+\end{align*}
+
+As we wanted to show.
+
+\newpage
+\subsection*{c)}
+
+\subsubsection*{i)}
+
+Intuitively, a projection of a vector cannot have a higher length than the original vector, hence $\left\| P \bm{x_i} \right\|^2 \leq \left\| \bm{x_i} \right\|^2$.
+
+First, let's expand the norms:
+
+\begin{align*}
+    \left\| P \bm{y} \right\|^2 &= \left( P \bm{y} \right)^T P \bm{y} \\
+    &= \bm{y}^T P^T P \bm{y} \\
+    &= \bm{y}^T P \bm{y} \\
+\end{align*}
+
+And: 
+
+\begin{align*}
+    \left\| \bm{y} \right\|^2 &= \bm{y}^T \bm{y} \\
+\end{align*}
+
+Now, since $P$ is a projection matrix, it projects vectors onto a subspace, and this subspace cannot
+have a higher dimension than the original space. This also means it can only reduce or maintin the length of the vector.
+Formally the statment becomes: 
+
+\begin{align*}
+    Py = y \quad \forall y \in \mathbb{R}^d \quad \text{if and only if } y \in \text{Range}(P)
+\end{align*}
+
+This gives that: 
+
+\begin{align*}
+    \left\| P \bm{y} \right\|^2 &= \bm{y}^T P \bm{y} \\
+    &= \bm{y}^T \bm{y} \quad \text{if } \bm{y} \in \text{Range}(P) \\
+    &\leq \bm{y}^T \bm{y} \\
+    &= \left\| \bm{y} \right\|^2
+\end{align*}
+
+As we wanted to show.
+
+\subsubsection*{ii)}
+
+The preservation of the pair-wise distances as much as possible is given by:
+
+\begin{align*}
+    \min \sum_{i=1}^{n} \sum_{j=1}^{n} \left\| \bm{x_i} - \bm{x_j} \right\|^2 - \left\| P \bm{x_i} - P \bm{x_j} \right\|^2
+\end{align*}
+
+Expanding the norms, we have:
+
+\begin{align*}
+    \min \sum_{i=1}^{n} \sum_{j=1}^{n} \left\| \bm{x_i} - \bm{x_j} \right\|^2 - \left\| P \bm{x_i} - P \bm{x_j} \right\|^2 &= \min \sum_{i=1}^{n} \sum_{j=1}^{n} \left( \bm{x_i} - \bm{x_j} \right)^T \left( \bm{x_i} - \bm{x_j} \right) - \left( P \bm{x_i} - P \bm{x_j} \right)^T \left( P \bm{x_i} - P \bm{x_j} \right) \\
+    &= \min \sum_{i=1}^{n} \sum_{j=1}^{n} \left( \bm{x_i} - \bm{x_j} \right)^T \left( \bm{x_i} - \bm{x_j} \right) - \left( P( \bm{x_i} - \bm{x_j}) \right)^T (P\left( \bm{x_i} - \bm{x_j} \right)) \\
+    &= \min \sum_{i=1}^{n} \sum_{j=1}^{n} \left( \bm{x_i} - \bm{x_j} \right)^T \left( \bm{x_i} - \bm{x_j} \right) - \left( \bm{x_i} - \bm{x_j} \right)^T P^T P \left( \bm{x_i} - \bm{x_j} \right) \\
+    &= \min \sum_{i=1}^{n} \sum_{j=1}^{n} \left( \bm{x_i} - \bm{x_j} \right)^T \left( \bm{x_i} - \bm{x_j} \right) - \left( \bm{x_i} - \bm{x_j} \right)^T P \left( \bm{x_i} - \bm{x_j} \right) \\
+    &= \min \sum_{i=1}^{n} \sum_{j=1}^{n} \left( \bm{x_i} - \bm{x_j} \right)^T \left(\left( \bm{x_i} - \bm{x_j} \right) - P \left( \bm{x_i} - \bm{x_j} \right) \right) \\
+    &= \min \sum_{i=1}^{n} \sum_{j=1}^{n} \left( \bm{x_i} - \bm{x_j} \right)^T (I - P) \left( \bm{x_i} - \bm{x_j} \right) \\
+\end{align*}
+
+As we wanted to show.
+
+\subsubsection*{iii)}
+
+First, let's consider the scatter matrix of pairwise differences $S_3$:
+
+\begin{align*}
+    S_3 &= \sum_{i=1}^{n} \sum_{j=1}^{n} \left( \bm{x_i} - \bm{x_j} \right) \left( \bm{x_i} - \bm{x_j} \right)^T
+\end{align*}
+
+Contrary to the previous scatter matrices, this one considers the pairwise differences between all data points, and not
+the differences between the data points and the mean. 
+
+Now, using the cyclic and scalar properties of the trace, we have that:
+
+\begin{align*}
+    \min \sum_{i=1}^{n} \sum_{j=1}^{n} \left( \bm{x_i} - \bm{x_j} \right)^T (I - P) \left( \bm{x_i} - \bm{x_j} \right) &= \min \sum_{i=1}^{n} \sum_{j=1}^{n} Tr \left( \left( \bm{x_i} - \bm{x_j} \right)^T (I - P) \left( \bm{x_i} - \bm{x_j} \right) \right) \\
+    &= \min Tr \left( \sum_{i=1}^{n} \sum_{j=1}^{n} \left( \bm{x_i} - \bm{x_j} \right) \left( \bm{x_i} - \bm{x_j} \right)^T (I - P) \right) \\
+    &= \min Tr \left( S_3 (I - P) \right) \quad {\text{because $S_3 = \sum_{i=1}^{n} \sum_{j=1}^{n} \left( \bm{x_i} - \bm{x_j} \right) \left( \bm{x_i} - \bm{x_j} \right)^T$}} \\
+\end{align*}
+
+Now, we need to introduce a scaling factor due to the double sum in the scatter matrix $S_3$, because
+we are summing over all pairs $(i, j)$, and we are counting each pair twice, one for $(i, j)$ and another for $(j, i)$.
+Also, we need to account for the scalling with the number of data points, since each individual datapoints is paired with all the others.
+Therefore, the scaling factor is given by $2n$, leading to:
+
+\begin{align*}
+    \min Tr \left( S_3 (I - P) \right) &\rightarrow \min 2n Tr \left( S_3 (I - P) \right) \\
+\end{align*}
+
+As we wanted to show.
+
+\newpage
+\subsection*{d)}
+
+The three formulations presented in the previous questions can be reduced, as shown before, to:
+
+\[
+\begin{aligned}
+    \max &\ \text{Tr}(S_1 P), \\
+    \min &\ \text{Tr}(S_2 (I - P)), \\
+    \min &\ \text{Tr}(S_3 (I - P)),
+\end{aligned}
+\]
+where \( P \) is the unknown projection matrix. 
+
+- The first formulation maximizes the scatter of the data projected onto the subspace.
+- The second formulation minimizes the reconstruction error of the data.
+- The third formulation minimizes the loss in pairwise distances of the data.
+
+Since the trace operator returns a scalar and the identity matrix is symmetric, we can rewrite the second and third formulations as:
+
+\[
+\begin{aligned}
+    \max &\ \text{Tr}(S_2 (P - I)), \\
+    \max &\ \text{Tr}(S_3 (P - I)).
+\end{aligned}
+\]
+
+Now, since we are maximizing the trace of a matrix, constant terms can be ignored. Specifically, in the second and third formulations, \( \text{Tr}(-S_2 I) \) and \( \text{Tr}(-S_3 I) \) are constant terms that do not affect the maximization with respect to \( P \). Hence, we can equivalently rewrite them as:
+
+\[
+\begin{aligned}
+    \max &\ \text{Tr}(S_1 P), \\
+    \max &\ \text{Tr}(S_2 P), \\
+    \max &\ \text{Tr}(S_3 P).
+\end{aligned}
+\]
+
+This shows that all three formulations reduce to maximizing the trace of a product of the projection matrix \( P \) and a scatter matrix \( S \) (which could be \( S_1 \), \( S_2 \), or \( S_3 \)). The solution to all three formulations is therefore the same: the matrix \( P \) that maximizes the trace is the one that projects the data onto the subspace spanned by the top \( k \) eigenvectors of the covariance matrix (or scatter matrix). 
+
+Thus, the three formulations are equivalent, and they all lead to the same solution: the principal components found via PCA.
+
+\newpage
+\subsection*{e)}
+
+The covariance matrix of the data is given by:
+
+\begin{align*}
+    S = V D V^T
+\end{align*}
+
+Where \( V \) is the matrix of eigenvectors and \( D \) is the diagonal matrix of eigenvalues.
+Those eigenvectors have the direction of the principal components, that is, the directions of the maximum variance of the data.
+Hence, the dotted lines in the plot represent the directions of the principal components and, thus,
+the directions of the eigenvectors of $V$, which are the columns of $V$.
+
+Now, expressing the projection matrix as:
+
+\begin{align*}
+    P = V_k V_k^T
+\end{align*}
+
+Where \( V_k \) is the matrix of the first \( k \) eigenvectors of the covariance matrix.
+
+Assuming $k = 1$, the projection matrix becomes:
+
+\begin{align*}
+    P = V_1 V_1^T
+\end{align*}
+
+Then, the projection of the data onto the first principal component by first removing the mean and adding the bias back, 
+in order to reduce the error of the projection, is given by:
+
+\begin{align*}
+    P \bm{x_i} = V_1 V_1^T \left( \bm{x_i} - \bm{\bar{x}} \right) + \bm{\bar{x}}
+\end{align*}
+
+\newpage
+\section{Probabilistic PCA - A general latent space distribution}
+
+\subsection*{a)}
+
+Since 
+
+\begin{align*}
+    p(x | z) &= \mathcal{N}(Wz + \mu, \sigma^2 I) \\
+\end{align*}
+
+Then we can say that:
+
+\begin{align*}
+    \epsilon_x &\sim \mathcal{N}(0, \sigma^2 I) \\
+\end{align*}
+
+Now, since \( x = Wz + \mu + \epsilon_x \) and $z = m + \epsilon_z$, we can rewrite the expression as:
+
+\begin{align*}
+    x &= W(m + \epsilon_z) + \mu + \epsilon_x \\
+    &= Wm + W\epsilon_z + \mu + \epsilon_x \\
+\end{align*}
+
+Now, since \( W\epsilon_z \) is a linear transformation of a Gaussian random variable, it is also Gaussian.
+Therefore, \( W\epsilon_z \sim \mathcal{N}(0, WW^T) \). 
+
+With this, since the sum of two Gaussian random variables is also Gaussian, we have that:
+
+\begin{align*}
+    x &\sim \mathcal{N}(Wm + \mu, W \Sigma W^T + \sigma^2 I) \\
+\end{align*}
+
+\subsection*{b)}
+
+To find the expectation of the variable $x$ by taking into account the linearity of the expectation operator, we have that:
+
+\begin{align*}
+    E[x] &= E[Wm + \mu + \epsilon_x + W\epsilon_z] \\
+    &= E[Wm] + E[\mu] + E[\epsilon_x] + E[W\epsilon_z] \\
+    &= Wm + \mu + E[\epsilon_x] + W E[\epsilon_z] \\
+    &= Wm + \mu
+\end{align*}
+
+This, because the expectancy of a constant is the constant itself in the case of $Wm$ and $\mu$, and the expectancy of a Gaussian random variable is the mean of the Gaussian distribution,
+which is 0 in the case of $\epsilon_x$, since $\epsilon_x \sim \mathcal{N}(0, \sigma^2 I)$ and in the case of $W\epsilon_z$, since $\epsilon_z \sim \mathcal{N}(0, \Sigma)$.
+
+\subsection*{c)}
+
+To find the covariance of the variable $x$, we have that:
+
+\begin{align*}
+    Cov[x] &= Cov[Wm + \mu + \epsilon_x + W\epsilon_z] \\
+    &= Cov[Wm] + Cov[\mu] + Cov[\epsilon_x] + Cov[W\epsilon_z] \\
+    &= W Cov[m] W^T + Cov[\mu] + Cov[\epsilon_x] + W Cov[\epsilon_z] W^T \\
+    &= Cov[\epsilon_x] + W Cov[\epsilon_z] W^T \quad \text{since $Cov[m] = Cov[\mu] = 0$ because they are constants} \\
+    &= \sigma^2 I + W \Sigma W^T \quad \text{since $Cov[\epsilon_x] = \sigma^2 I$ and $Cov[\epsilon_z] = \Sigma$}
+\end{align*}
+
+This, because the covariance of a constant is 0, and the covariance of a Gaussian random variable is the covariance matrix of the Gaussian distribution,
+
+\subsection*{d)}
+
+To match the previous expression:
+
+\begin{align*}
+    x &\sim \mathcal{N}(Wm + \mu, W \Sigma W^T + \sigma^2 I) \\
+\end{align*}
+
+In the form:
+
+\begin{align*}
+    x &\sim \mathcal{N}(\tilde{\mu}, \tilde{W} \tilde{W}^T + \sigma^2 I) \\
+\end{align*}
+
+Then, we have that:
+
+\begin{align*}
+    \tilde{\mu} &= Wm + \mu \\
+    \tilde{W} &= W \Sigma^{1/2}
+\end{align*}
+
+The $\tilde{\mu}$ is easy to check because it is the mean of the Gaussian distribution, and the $\tilde{W}$ is the square root of the covariance matrix of the Gaussian distribution, since:
+
+\begin{align*}
+    W \Sigma W^T + \sigma^2 I &= W \Sigma^{1/2} \Sigma^{1/2} W^T + \sigma^2 I \\
+    &= W \Sigma^{1/2} {\Sigma^{1/2}}^T W^T + \sigma^2 I \quad \text{since $\Sigma$ is symmetric} \\
+    &= (W \Sigma^{1/2}) (W \Sigma^{1/2})^T + \sigma^2 I
+\end{align*}
+
+\section{Mixtures of Experts}
+
+\subsection*{a)}
+
+Considering that $z_n$ is one-hot encoded, then we assign 1 to the index corresponding to the expert that is responsible
+for the data point $x_n$, i.e., the one with the highest probability, and 0 to the other indices.
+In resume, we need to find the index $k$ that maximizes the probability $p(z_n = k | x_n, \Phi) = \pi_{nk}$.
+
+This gives that:
+
+\begin{align*}
+    z_n = \underset{j}{\mathrm{argmax}} \pi_{nk}
+    &= \begin{cases}
+        1, & \text{if } k = \underset{j}{\mathrm{argmax}} \pi_{nj} = \underset{j}{\mathrm{argmax}} \frac{exp(\phi_j^T x_n)}{\sum_{l=1}^{K} exp(\phi_l^T x_n)} \\
+        0, & \text{otherwise}
+    \end{cases}
+\end{align*}
+
+\subsection*{b)}
+
+The likelihood of the data is given by:
+
+\begin{align*}
+    p(y | X, \Theta, \Phi) &= \prod_{n=1}^{N} p(y_n | x_n, \Theta, \Phi) \quad \text{assuming i.i.d.} \\
+    &= \prod_{n=1}^{N} \sum_{k=1}^{K} p(y_n | z_n = k, x_n, \Theta) p(z_n = k | x_n, \Phi) \\
+    &= \prod_{n=1}^{N} \sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta) \\
+\end{align*}
+
+Which, if we expand the terms, gives:
+
+\begin{align*}
+    p(y | X, \Theta, \Phi) &= \prod_{n=1}^{N} \sum_{k=1}^{K} \frac{\exp(\phi_k^T x_n)}{\sum_{l=1}^{K} \exp(\phi_l^T x_n)} \exp(\theta_k^T x_n) \exp(-\exp(\theta_k^T x_n) y_n) \\
+    &= \prod_{n=1}^{N} \sum_{k=1}^{K} \frac{\exp(\phi_k^T x_n)}{\sum_{l=1}^{K} \exp(\phi_l^T x_n)} \exp(\theta_k^T x_n -\exp(\theta_k^T x_n) y_n) \\
+\end{align*}
+
+The log-likelihood, without the expanding terms, is given by:
+
+\begin{align*}
+    \log p(y | X, \Theta, \Phi) &= \sum_{n=1}^{N} \log \sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta) \\
+\end{align*}
+
+Expanding the terms, we have:
+
+\begin{align*}
+    \log p(y | X, \Theta, \Phi) &= \sum_{n=1}^{N} \log \sum_{k=1}^{K} \frac{\exp(\phi_k^T x_n)}{\sum_{l=1}^{K} \exp(\phi_l^T x_n)} \exp(\theta_k^T x_n -\exp(\theta_k^T x_n) y_n) \\
+\end{align*}
+
+\subsection*{c)}
+
+The responsability of the expert $k$ for the data point $x_n$ is given by:
+
+\begin{align*}
+    r_{nk} &= p(z_n = k | x_n, \Theta, \Phi) \\
+    &= \frac{p(y_n | x_n, z_n = k, \Theta) p(z_n = k | x_n, \Phi)}{p(y_n | x_n, \Theta, \Phi)} \\
+    &= \frac{p(y_n | z_n = k, x_n, \Theta) p(z_n = k | x_n, \Phi)}{\sum_{j=1}^{K} p(y_n | z_n = j, x_n, \Theta) p(z_n = j | x_n, \Phi)} \\
+    &= \frac{\pi_{nk} p(y_n | z_n = k, x_n, \Theta)}{\sum_{j=1}^{K} \pi_{nj} p(y_n | z_n = j, x_n, \Theta)} \\
+\end{align*}
+
+By expanding the terms, we have:
+
+\begin{align*}
+    r_{nk} &= \frac{\frac{\exp(\phi_k^T x_n)}{\sum_{l=1}^{K} \exp(\phi_l^T x_n)} \exp(\theta_k^T x_n -\exp(\theta_k^T x_n) y_n)}{\sum_{j=1}^{K} \frac{\exp(\phi_j^T x_n)}{\sum_{l=1}^{K} \exp(\phi_l^T x_n)} \exp(\theta_j^T x_n -\exp(\theta_j^T x_n) y_n)} \\
+\end{align*}
+
+Which can be simplified to:
+
+\begin{align*}
+    r_{nk} &= \frac{\exp(\phi_k^T x_n) \exp(\theta_k^T x_n -\exp(\theta_k^T x_n) y_n)}{\sum_{j=1}^{K} \exp(\phi_j^T x_n) \exp(\theta_j^T x_n -\exp(\theta_j^T x_n) y_n)} \\
+\end{align*}
+
+\subsection*{d)}
+
+As shown before, the likelihood is given by:
+
+\begin{align*}
+    p(y | X, \Theta, \Phi) &= \prod_{n=1}^{N} \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \Theta) \\
+\end{align*}
+
+By taking the hint into account to derivate the log-likelihood, we have that:
+
+\begin{align*}
+    \frac{\partial \log p(y | X, \Theta, \Phi)}{\partial \theta_i} &= \frac{\partial}{\partial \theta_i} \sum_{n=1}^{N} \log \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k) \\
+    &= \sum_{n=1}^{N} \frac{\partial}{\partial \theta_i} \log \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k) \\
+    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k)} \frac{\partial}{\partial \theta_i} \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k) \\
+\end{align*}
+
+Now, $p(z_n = k | x_n, \Phi)$ is given by:
+
+\begin{align*}
+    p(z_n = k | x_n, \Phi) &= \frac{\exp(\phi_k^T x_n)}{\sum_{l=1}^{K} \exp(\phi_l^T x_n)} \\
+\end{align*}
+
+Therefore, it does not depend on $\theta_i$, giving that:
+
+\begin{align*}
+    \frac{\partial \log p(y | X, \Theta, \Phi)}{\partial \theta_i} &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k)} \frac{\partial}{\partial \theta_i} \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_i) \\
+    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k)} p(z_n = i | x_n, \Phi) \frac{\partial}{\partial \theta_i} p(y_n | z_n = i, x_n, \theta_i) \\
+    &= \sum_{n=1}^{N} r_{ni} \frac{\partial}{\partial \theta_i} p(y_n | z_n = i, x_n, \theta_i) \\
+\end{align*}
+
+Now the derivative in respect to $\phi_i$ is given by:
+
+\begin{align*}
+    \frac{\partial \log p(y | X, \Theta, \Phi)}{\partial \phi_i} &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \Theta)} \frac{\partial}{\partial \phi_i} \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \Theta) \\
+    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \Theta)} \frac{\partial}{\partial \phi_i} \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \Theta) \\
+    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \Theta)} p(y_n | z_n = i, x_n, \theta_i) \frac{\partial}{\partial \phi_i} p(z_n = i | x_n, \Phi) \\
+\end{align*}
+
+
+\clearpage
+
+\appendix
+
+
+\newpage
+\printbibliography
+
+\end{document}
+
