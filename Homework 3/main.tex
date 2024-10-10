@@ -292,13 +292,25 @@ Those eigenvectors have the direction of the principal components, that is, the 
 Hence, the dotted lines in the plot represent the directions of the principal components and, thus,
 the directions of the eigenvectors of $V$, which are the columns of $V$.
 
-Now, expressing the projection matrix as:
+Now, for any given space that is spanned by the column space of $A$, the projection matrix $P$ is given by:
+
+\begin{align*}
+    P = A (A^T A)^{-1} A^T
+\end{align*}
+
+Since, in the case of PCA, the matrix $A$ is the matrix of eigenvectors, the projection matrix $P$ is given by:
 
 \begin{align*}
     P = V_k V_k^T
 \end{align*}
 
 Where \( V_k \) is the matrix of the first \( k \) eigenvectors of the covariance matrix.
+
+This is because, the eigenvectors are orthogonal to each other, hence:
+
+\begin{align*}
+    P = V_k (V_k^T V_k)^{-1} V_k^T = V_k (I)^{-1} V_k^T = V_k V_k^T
+\end{align*}
 
 Assuming $k = 1$, the projection matrix becomes:
 
@@ -455,10 +467,10 @@ Expanding the terms, we have:
 The responsability of the expert $k$ for the data point $x_n$ is given by:
 
 \begin{align*}
-    r_{nk} &= p(z_n = k | x_n, \Theta, \Phi) \\
-    &= \frac{p(y_n | x_n, z_n = k, \Theta) p(z_n = k | x_n, \Phi)}{p(y_n | x_n, \Theta, \Phi)} \\
-    &= \frac{p(y_n | z_n = k, x_n, \Theta) p(z_n = k | x_n, \Phi)}{\sum_{j=1}^{K} p(y_n | z_n = j, x_n, \Theta) p(z_n = j | x_n, \Phi)} \\
-    &= \frac{\pi_{nk} p(y_n | z_n = k, x_n, \Theta)}{\sum_{j=1}^{K} \pi_{nj} p(y_n | z_n = j, x_n, \Theta)} \\
+    r_{nk} &= p(z_{nk} = 1 | x_n, \Theta, \Phi) \\
+    &= \frac{p(y_n | x_n, z_{nk} = 1, \Theta) p(z_{nk} = 1 | x_n, \Phi)}{p(y_n | x_n, \Theta, \Phi)} \\
+    &= \frac{p(y_n | z_{nk} = 1, x_n, \Theta) p(z_{nk} = 1 | x_n, \Phi)}{\sum_{j=1}^{K} p(y_n | z_{nj} = 1, x_n, \Theta) p(z_{nj} = 1 | x_n, \Phi)} \\
+    &= \frac{\pi_{nk} p(y_n | z_{nk} = 1, x_n, \Theta)}{\sum_{j=1}^{K} \pi_{nj} p(y_n | z_{nj} = 1, x_n, \Theta)} \\
 \end{align*}
 
 By expanding the terms, we have:
@@ -489,27 +501,102 @@ By taking the hint into account to derivate the log-likelihood, we have that:
     &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k)} \frac{\partial}{\partial \theta_i} \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k) \\
 \end{align*}
 
-Now, $p(z_n = k | x_n, \Phi)$ is given by:
+Now, taking the derivative in respect of $\phi_i$:
 
 \begin{align*}
-    p(z_n = k | x_n, \Phi) &= \frac{\exp(\phi_k^T x_n)}{\sum_{l=1}^{K} \exp(\phi_l^T x_n)} \\
+    \frac{\partial \log p(y | X, \Theta, \Phi)}{\partial \phi_i} &= \frac{\partial}{\partial \phi_i} \sum_{n=1}^{N} \log \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k) \\
+    &= \sum_{n=1}^{N} \frac{\partial}{\partial \phi_i} \log \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k) \\
+    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k)} \frac{\partial}{\partial \phi_i} \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k) \\
 \end{align*}
 
-Therefore, it does not depend on $\theta_i$, giving that:
+\newpage
+\subsection*{e)}
+
+Now, inserting the explicit expressions for the probabilities, we have that:
 
 \begin{align*}
-    \frac{\partial \log p(y | X, \Theta, \Phi)}{\partial \theta_i} &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k)} \frac{\partial}{\partial \theta_i} \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_i) \\
-    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k)} p(z_n = i | x_n, \Phi) \frac{\partial}{\partial \theta_i} p(y_n | z_n = i, x_n, \theta_i) \\
-    &= \sum_{n=1}^{N} r_{ni} \frac{\partial}{\partial \theta_i} p(y_n | z_n = i, x_n, \theta_i) \\
+    \frac{\partial \log p(y | X, \Theta, \Phi)}{\partial \theta_i} &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)} \frac{\partial}{\partial \theta_i} \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \theta_k) \\
+    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)} \frac{\partial}{\partial \theta_i} \sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta) \\
+    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)} \sum_{k=1}^{K} \pi_{nk} \frac{\partial}{\partial \theta_i} p(y_n | z_n = k, x_n, \Theta) \\
+    &= \sum_{n=1}^{N} \frac{\pi_{nk}}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)} \sum_{k=1}^{K} \frac{\partial}{\partial \theta_i} \left(\lambda \exp(-\lambda y_n) \right) \\
+    &= \sum_{n=1}^{N} \frac{\pi_{nk}}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)} \sum_{k=1}^{K} \frac{\partial}{\partial \lambda} \left(\lambda \exp(-\lambda y_n) \right) \frac{\partial \lambda}{\partial \theta_i} \\
+    &= \sum_{n=1}^{N} \frac{\pi_{nk}}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)} \sum_{k=1}^{K} (\exp(-\lambda y_n) - \lambda y_n \exp(-\lambda y_n)) \frac{\partial \lambda}{\partial \theta_i} \\
+    &= \sum_{n=1}^{N} \frac{\pi_{nk}}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)} \sum_{k=1}^{K} (\exp(-\lambda y_n) - \lambda y_n \exp(-\lambda y_n)) \frac{\partial}{\partial \theta_i} \exp(\theta_k^T x_n) \\
+    &= \sum_{n=1}^{N} \frac{\pi_{nk}}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)} \sum_{k=1}^{K} (\exp(-\lambda y_n) - \lambda y_n \exp(-\lambda y_n)) \exp(\theta_k^T x_n) x_n \delta_{ik} \\
+    &= \sum_{n=1}^{N} \frac{\pi_{ni}}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)} (\exp(-\lambda y_n) - \lambda y_n \exp(-\lambda y_n)) \exp(\theta_i^T x_n) x_n \\
+    &= \sum_{n=1}^{N} \frac{\pi_{ni}}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)} \lambda \exp(-\lambda y_n) (1 - \lambda y_n) x_n \\
+    &= \sum_{n=1}^{N} \frac{\pi_{ni} p(y_n | z_n = i, x_n, \theta_i)}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)} (1 - \lambda y_n) x_n \\
+    &= \sum_{n=1}^{N} r_{ni} (1 - \lambda y_n) x_n
 \end{align*}
 
-Now the derivative in respect to $\phi_i$ is given by:
+Now, for $\phi_i$:
 
 \begin{align*}
-    \frac{\partial \log p(y | X, \Theta, \Phi)}{\partial \phi_i} &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \Theta)} \frac{\partial}{\partial \phi_i} \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \Theta) \\
-    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \Theta)} \frac{\partial}{\partial \phi_i} \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \Theta) \\
-    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \Theta)} p(y_n | z_n = i, x_n, \theta_i) \frac{\partial}{\partial \phi_i} p(z_n = i | x_n, \Phi) \\
+    \frac{\partial \log p(y | X, \Theta, \Phi)}{\partial \phi_i} &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \phi)} \frac{\partial}{\partial \phi_i} \sum_{k=1}^{K} p(z_n = k | x_n, \Phi) p(y_n | z_n = k, x_n, \phi_k) \\
+    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)} \frac{\partial}{\partial \phi_i} \sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta) \\
+    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)}  \sum_{k=1}^{K} \frac{\partial}{\partial \phi_i} \pi_{nk} p(y_n | z_n = k, x_n, \Theta) \\
+    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)}  \sum_{k=1}^{K} p(y_n | z_n = k, x_n, \Theta) \frac{\partial}{\partial \phi_i} \pi_{nk}  \\
+    &= \sum_{n=1}^{N} \frac{1}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)}  \sum_{k=1}^{K} p(y_n | z_n = k, x_n, \Theta) \frac{\partial}{\partial \phi_i} \frac{\exp(\phi_k^T x_n)}{\sum_{l=1}^{K} \exp(\phi_l^T x_n)}  \\
+    &= \sum_{n=1}^{N} \frac{p(y_n | z_n = k, x_n, \Theta) \pi_{ni} (1 - \pi_{ni}) x_n - \sum_{k \neq i}^{K} p(y_n | z_n = k, x_n, \Theta) \pi_{nk} \pi_{ni} x_n}{\sum_{k=1}^{K} \pi_{nk} p(y_n | z_n = k, x_n, \Theta)}   \\
+    &= \sum_{n=1}^{N} \left[r_{ni} (1 - \pi_{ni}) x_n - \sum_{k \neq i}^{K} r_{nk} \pi_{ni} x_n \right] \\
+    &= \sum_{n=1}^{N} \left[r_{ni} (1 - \pi_{ni}) x_n - \pi_{ni} x_n \sum_{k \neq i}^{K} r_{nk}\right]  \\
+    &= \sum_{n=1}^{N} \left[r_{ni} (1 - \pi_{ni}) x_n - \pi_{ni} x_n (1 - r_{ni})\right] \\
+    &= \sum_{n=1}^{N} \left[r_{ni} - \pi_{ni}\right] x_n
 \end{align*}
+
+\newpage
+\subsection*{f)}
+
+Now, writing down an iterative algorithm that maximizes the log-probability by jointly optimizing the parameters $\Theta$ and $\Phi$:
+
+
+\begin{algorithm}
+    \caption{Joint optimization of \( \Theta \) and \( \Phi \) in Mixtures of Experts}
+    \begin{algorithmic}
+        \State \textbf{Input:} Data \( X \), labels \( Y \), parameters \( \Theta \), \( \Phi \), learning rate \( \alpha \), tolerance \( \epsilon \)
+        \State \textbf{Output:} Updated parameters \( \Theta \), \( \Phi \)
+        \State Initialize parameters \( \Theta \) and \( \Phi \)
+        
+        \While{not converged}
+            \State \textbf{E-step:} Compute responsibilities \( r_{nk} \):
+            \[
+            r_{nk} = \frac{p(y_n | x_n, \theta_k) \, \pi_{nk}}{\sum_{j=1}^{K} p(y_n | x_n, \theta_j) \, \pi_{nj}}
+            \]
+            where \( \pi_{nk} = p(z_n = k | x_n, \Phi) = \frac{\exp(\phi_k^T x_n)}{\sum_{j=1}^{K} \exp(\phi_j^T x_n)} \)
+            
+            \State \textbf{M-step:} Update \( \Theta \) and \( \Phi \) using the gradients:
+            \[
+            \Theta \leftarrow \Theta + \alpha \sum_{n=1}^{N} r_{nk} \left( x_n - \lambda y_n \right)
+            \]
+            \[
+            \Phi \leftarrow \Phi + \alpha \sum_{n=1}^{N} \left[ r_{nk} - \pi_{nk} \right] x_n
+            \]
+            \State \textbf{Check for convergence:} 
+            \State \quad Compute the change in log-likelihood:
+            \[
+            \Delta \mathcal{L} = \left| \mathcal{L}^{(t+1)} - \mathcal{L}^{(t)} \right|
+            \]
+            \If{ \( \Delta \mathcal{L} < \epsilon \) \textbf{or} maximum iterations reached}
+                \State \textbf{Terminate:} The algorithm has converged when the log-likelihood improvement is smaller than a predefined threshold \( \epsilon \), indicating that further updates provide negligible improvement.
+                \State \quad Return optimized parameters \( \Theta \) and \( \Phi \).
+            \Else
+                \State \quad Continue to the next iteration by updating \( t \leftarrow t + 1 \).
+            \EndIf
+        \EndWhile
+    \end{algorithmic}
+\end{algorithm}
+
+
+\newpage
+\subsection*{g)}
+
+If instead of having a single expert, we have multiple experts, then the final prediction $\hat{y}$ is given by
+the weighted sum of the predictions of each expert, where the weights are given by the responsibilities $r_{nk}$:
+
+\begin{align*}
+    \hat{y} &= \sum_{k=1}^{K} r_{nk} \hat{y}_{nk} \\
+\end{align*}
+
 
 
 \clearpage

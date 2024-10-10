@@ -11,7 +11,7 @@
 % ################################################################################
 
 % Encoding and Language
-\usepackage[utf8x]{inputenc}
+\usepackage[utf8]{inputenc} % Changed from utf8x to utf8
 \usepackage{csquotes}
 \usepackage[main=english]{babel}
 \usepackage{iflang}
@@ -39,15 +39,10 @@
 \usepackage{multirow}
 \usepackage{multicol}
 
-% Line Spacing
-\usepackage{setspace}
-\renewcommand{\baselinestretch}{1.2}
-
 % Graphics and Figures
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{subfigmat}
-\usepackage{float}
 
 %Colors
 \usepackage{xcolor}
@@ -84,6 +79,16 @@
 \DeclareCaptionFont{georgia}{\small\fontseries{n}\fontfamily{georgia}\selectfont}
 \captionsetup{labelfont=georgia,font=georgia}
 
+% Algorithm packages
+% \usepackage{algorithm2e}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float} % For [H] placement
+
+% Line Spacing
+\usepackage{setspace}
+\renewcommand{\baselinestretch}{1.2}
+
 % Bibliography
 \usepackage[backend=biber,style=apa]{biblatex}
 
@@ -100,10 +105,6 @@
 % Cleveref (for clever references)
 \usepackage[\IfLanguageName{english}{english}{portuguese}]{cleveref}
 \Crefname{equation}{Eq.}{Eqs.}
-
-% Colors
-\usepackage{xcolor}
-\usepackage{color}
 
 % Custom Commands
 \newcommand{\gray}[1]{\textcolor{gray}{#1}}
